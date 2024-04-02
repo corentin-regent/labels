@@ -164,11 +164,7 @@ def sync_cmd(
     filename: typing.List[str],
     dryrun: bool,
 ) -> None:
-    """Sync labels with a GitHub repository.
-
-    On success this will also update the local labels file, so that section
-    names match the `name` parameter.
-    """
+    """Sync labels with a GitHub repository."""
     labels_to_delete = {}
     labels_to_update = {}
     labels_to_create = {}
