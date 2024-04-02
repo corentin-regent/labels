@@ -210,7 +210,7 @@ def test_sync_dryrun(
 @pytest.mark.parametrize(
     "repo_owner, repo_name, remote_url",
     [("pytest-dev", "pytest", "git@github.com:hackebrot/pytest-emoji.git")],
-    ids=["override_owner_and_repo"],
+    ids=["sync_multiple"],
 )
 def test_sync_multiple_files(
     run_cli: typing.Callable,
