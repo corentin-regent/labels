@@ -161,7 +161,7 @@ def sync_cmd(
     context: LabelsContext,
     owner: str,
     repo: str,
-    filenames: typing.List[str],
+    filename: typing.List[str],
     dryrun: bool,
 ) -> None:
     """Sync labels with a GitHub repository.
@@ -175,8 +175,8 @@ def sync_cmd(
     labels_to_ignore = {}
 
     local_labels = {}
-    for filename in filenames:
-        local_labels.update(read_labels(filename))
+    for file in filename:
+        local_labels.update(read_labels(file))
 
     repository = Repository(owner, repo)
 
