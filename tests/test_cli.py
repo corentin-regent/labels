@@ -221,7 +221,8 @@ def test_sync_multiple_files(
 ) -> None:
     """Test that sync with multiple files works as designed."""
     result = run_cli(
-        f"-v sync -o {repo_owner} -r {repo_name} -f {labels_file_sync} -f {other_labels_file_sync}"
+        f"-v sync -o {repo_owner} -r {repo_name}"
+        + f" -f {labels_file_sync} -f {other_labels_file_sync}"
     )
     assert result.exit_code == 0
     assert f"Requesting labels for {repo_owner}/{repo_name}" in result.output
