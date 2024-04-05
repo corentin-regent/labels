@@ -150,8 +150,11 @@ This would NOT modify the following labels:
   - docs
 ```
 
-Running ``labels sync`` without the ``dryrun`` option also updates the labels
-file, so that section names match the ``name`` parameter.
+You can also synchronize your repository with labels defined in multiple files:
+
+```text
+labels sync -o hackebrot -r pytest-emoji -f issue-labels.toml -f release-labels.toml
+```
 
 If **labels** encounters any errors while sending requests to the GitHub API,
 it will print information about the failure and continue with the next label

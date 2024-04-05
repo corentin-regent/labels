@@ -204,3 +204,31 @@ def test_sync_dryrun(
         "  - docs\n"
     )
     assert output in result.output
+
+
+@pytest.mark.usefixtures("mock_sync", "mock_repo_info")
+@pytest.mark.parametrize(
+    "repo_owner, repo_name, remote_url",
+    [("pytest-dev", "pytest", "git@github.com:hackebrot/pytest-emoji.git")],
+    ids=["sync_multiple"],
+)
+def test_sync_multiple_files(
+    run_cli: typing.Callable,
+    repo_owner: str,
+    repo_name: str,
+    labels_file_sync: str,
+    other_labels_file_sync: str,
+) -> None:
+    """Test that sync with multiple files works as designed."""
+    result = run_cli(
+        f"-v sync -o {repo_owner} -r {repo_name}"
+        + f" -f {labels_file_sync} -f {other_labels_file_sync}"
+    )
+    assert result.exit_code == 0
+    assert f"Requesting labels for {repo_owner}/{repo_name}" in result.output
+    assert f"Deleting label 'infra' for {repo_owner}/{repo_name}" in result.output
+    assert f"Editing label 'bug' for {repo_owner}/{repo_name}" in result.output
+    assert (
+        f"Creating label 'dependencies' for {repo_owner}/{repo_name}" in result.output
+    )
+    assert f"Creating label 'other' for {repo_owner}/{repo_name}" in result.output

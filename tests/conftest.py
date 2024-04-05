@@ -290,7 +290,7 @@ def fixture_mock_delete_label(
 def fixture_mock_sync(
     base_url: str, repo_owner: str, repo_name: str, response_list_labels: ResponseLabels
 ) -> Generator:
-    with responses.RequestsMock() as rsps:
+    with responses.RequestsMock(assert_all_requests_are_fired=False) as rsps:
         # Response mock for when sync requests the existing remote labels
         rsps.add(
             responses.GET,
@@ -311,6 +311,23 @@ def fixture_mock_sync(
                 "name": "dependencies",
                 "description": "Tasks related to managing dependencies",
                 "color": "43a2b7",
+                "default": False,
+            },
+            status=201,
+            content_type="application/json",
+        )
+
+        # Response mock for when sync creates the "other" label
+        rsps.add(
+            responses.POST,
+            f"{base_url}/repos/{repo_owner}/{repo_name}/labels",
+            json={
+                "id": 8080,
+                "node_id": "4848",
+                "url": f"{base_url}/repos/{repo_owner}/{repo_name}/labels/other",
+                "name": "other",
+                "description": "Some other label",
+                "color": "000000",
                 "default": False,
             },
             status=201,
@@ -455,3 +472,9 @@ def fixture_labels_file_load() -> str:
 def fixture_labels_file_sync(tmpdir: Any) -> str:
     """Return a filepath to an existing labels file for the sync test."""
     return "tests/sync.toml"
+
+
+@pytest.fixture(name="other_labels_file_sync")
+def fixture_other_labels_file_sync() -> str:
+    """Return a filepath to another existing labels file for the sync test."""
+    return "tests/other-sync.toml"

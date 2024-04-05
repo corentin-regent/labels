@@ -151,25 +151,28 @@ def fetch_cmd(context: LabelsContext, owner: str, repo: str, filename: str) -> N
 @click.option(
     "-f",
     "--filename",
-    help="Filename for labels",
-    default="labels.toml",
+    help="Filenames for labels",
+    default=["labels.toml"],
     type=click.Path(exists=True),
     required=True,
+    multiple=True,
 )
 def sync_cmd(
-    context: LabelsContext, owner: str, repo: str, filename: str, dryrun: bool
+    context: LabelsContext,
+    owner: str,
+    repo: str,
+    filename: typing.List[str],
+    dryrun: bool,
 ) -> None:
-    """Sync labels with a GitHub repository.
-
-    On success this will also update the local labels file, so that section
-    names match the `name` parameter.
-    """
+    """Sync labels with a GitHub repository."""
     labels_to_delete = {}
     labels_to_update = {}
     labels_to_create = {}
     labels_to_ignore = {}
 
-    local_labels = read_labels(filename)
+    local_labels = {}
+    for file in filename:
+        local_labels.update(read_labels(file))
 
     repository = Repository(owner, repo)
 
@@ -243,15 +246,6 @@ def sync_cmd(
 
     if failures:
         sys.exit(1)
-
-    # Make sure to write the local labels file to update TOML sections
-    write_labels(
-        filename,
-        sorted(
-            local_labels.values(),
-            key=operator.attrgetter("name", "description", "color"),
-        ),
-    )
 
 
 def dryrun_echo(
